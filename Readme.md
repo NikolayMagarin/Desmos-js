@@ -1,6 +1,6 @@
 # Desmos-js
 
-A library that allows you to use javascript to create desmos projects (desmos.com)
+A library that allows you to use javascript to create desmos projects ([desmos.com](https://www.desmos.com/calculator))
 
 ### build
 

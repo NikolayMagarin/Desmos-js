@@ -9,7 +9,7 @@ import {
 } from './types';
 
 import { init as enableArithmetics } from './arithmetics';
-import { convertScientificNotationNumber } from '../../utils/c';
+import { convertNumber } from '../../utils/convertNumber';
 
 export const universal = function () {};
 universal.prototype[isAccessorSymbol] = true;
@@ -35,7 +35,7 @@ export function primitiveToValue(primimtive: PrimitiveValue): string {
   // определить из вида примитива значение для аксессора (только parts[0])
 
   if (typeof primimtive === 'number') {
-    return convertScientificNotationNumber(primimtive);
+    return convertNumber(primimtive);
   }
 
   return '';

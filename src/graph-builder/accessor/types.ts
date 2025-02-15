@@ -67,7 +67,7 @@ export interface ArrayAccessor extends BaseAccessor {
   over: ArrayArithmeticFunc;
 }
 
-export type Accessor = NumberAccessor & PointAccessor & ArrayAccessor;
+export type Accessor = NumberAccessor | PointAccessor | ArrayAccessor;
 
 export type AccessorCollector = {
   [k: string]: Accessor;

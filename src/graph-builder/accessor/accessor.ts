@@ -9,7 +9,7 @@ import {
 } from './types';
 
 import { init as enableArithmetics } from './arithmetics';
-import { convertNumber } from '../../utils/convertNumber';
+import { primitiveToValue } from './primitives';
 
 export const universal = function () {};
 universal.prototype[isAccessorSymbol] = true;
@@ -20,36 +20,23 @@ universal.prototype[valueSymbol] = {
 
 enableArithmetics(universal);
 
-export function accessorWithValue(
-  parts: AccessorValue['parts'],
-  variables?: AccessorValue['variables']
-): Accessor {
+export function accessorWithValue(value: AccessorValue): Accessor {
   return Object.create(universal.prototype, {
     [valueSymbol]: {
-      value: { parts: parts, variables: variables || [] },
+      value: value,
     },
   });
 }
 
-export function primitiveToValue(primimtive: PrimitiveValue): string {
-  // определить из вида примитива значение для аксессора (только parts[0])
-
-  if (typeof primimtive === 'number') {
-    return convertNumber(primimtive);
-  }
-
-  return '';
-}
-
 export function primimtiveToAccessor(primimtive: PrimitiveValue): Accessor {
-  return accessorWithValue([primitiveToValue(primimtive)]);
+  return accessorWithValue(primitiveToValue(primimtive));
 }
 
 export function parseValue(value: Accessor | PrimitiveValue): AccessorValue {
   if (isAccessor(value)) {
     return value[valueSymbol];
   } else {
-    return { parts: [primitiveToValue(value)], variables: [] };
+    return primitiveToValue(value);
   }
 }
 

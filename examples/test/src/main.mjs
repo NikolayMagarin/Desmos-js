@@ -3,18 +3,11 @@ import { graphBuilder as gb } from '../../../dist/graph-builder/graphBuilder.js'
 
 const { definer: def, accessor: _, converter: $ } = gb;
 
-def.b = 7;
-def.res = _.b.times($(1).over(_.a));
-def.a = 1000;
+// def.a = [_.b.plus(_.c)];
+def.a = [1, _.b.over(_.c.plus($(3).times(_.c))), 2, 3, _.c.plus(_.b), 1534];
 
-//
+def.b = $(2).over(_.c.plus(3));
 
-// number.b = $.a.plus(1);
+def.c = 100;
 
-// number.a = 1;
-
-// point.B = { x: 4, y: 2 };
-
-// point.A = { x: -4, y: $(-3).plus($.a) }; // Вызов $(-3) означает преобразование -3 в аксессор (возможно для этого лучше сделать отдельную функцию а не перегружать $)
-
-// point.C = $.B.plus($({ x: 0, y: 1 }).plus($.A));
+def.point = { x: 0, y: 0 };

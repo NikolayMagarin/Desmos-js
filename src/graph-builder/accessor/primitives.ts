@@ -22,14 +22,14 @@ export function primitiveToValue(primitive: PrimitiveValue): AccessorValue {
     return convertPoint(primitive);
   }
 
-  return { parts: [], variables: [] };
+  // Неизвестный примитив
+  throw new Error('error');
 }
 
 export function isPrimitivePoint(
   primitive: PrimitiveValue
 ): primitive is PrimitivePoint {
-  return primitive.hasOwnProperty('x');
-  // && primimtive.hasOwnProperty('y')
+  return primitive.hasOwnProperty('x') && primitive.hasOwnProperty('y');
 }
 
 // convert number to string avoiding using exponential notation

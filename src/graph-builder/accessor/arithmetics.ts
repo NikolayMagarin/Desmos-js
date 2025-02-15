@@ -82,5 +82,25 @@ export function init(universal = function () {}) {
     });
   };
 
+  universal.prototype.pow = function (
+    value: Accessor | PrimitiveValue
+  ): Accessor {
+    const aVal = (this as Accessor)[valueSymbol];
+    const bVal = (
+      isAccessor(value) ? value : accessorWithValue(primitiveToValue(value))
+    )[valueSymbol];
+
+    return accessorWithValue({
+      parts: aVal.parts.concat(
+        ['^{'],
+        bVal.parts.map((part) =>
+          typeof part === 'number' ? part + aVal.variables.length : part
+        ),
+        ['}']
+      ),
+      variables: aVal.variables.concat(bVal.variables),
+    });
+  };
+
   return universal;
 }

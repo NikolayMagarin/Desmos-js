@@ -26,45 +26,32 @@ export type PrimitivePoint = {
 export type PrimitiveArray = Array<Accessor | PrimitiveNumber | PrimitivePoint>;
 export type PrimitiveValue = PrimitiveNumber | PrimitivePoint | PrimitiveArray;
 
-type NumberArithmeticFunc = (
-  value: NumberAccessor | PrimitiveNumber
-) => NumberAccessor;
-
-type PointArithmeticFunc = (
-  value:
-    | PointAccessor
-    | {
-        x: NumberAccessor | PrimitiveNumber;
-        y: NumberAccessor | PrimitiveNumber;
-      }
-) => PointAccessor;
-
-// Вообще массивы можно складывать c числами и точками...
-type ArrayArithmeticFunc = (
-  value: ArrayAccessor | PrimitiveArray
-) => ArrayAccessor;
+type ArithmeticFunc = (value: Accessor | PrimitiveValue) => Accessor;
 
 export interface NumberAccessor extends BaseAccessor {
-  plus: NumberArithmeticFunc;
-  minus: NumberArithmeticFunc;
-  times: NumberArithmeticFunc;
-  over: NumberArithmeticFunc;
+  plus: ArithmeticFunc;
+  minus: ArithmeticFunc;
+  times: ArithmeticFunc;
+  over: ArithmeticFunc;
+  pow: ArithmeticFunc;
 }
 
 export interface PointAccessor extends BaseAccessor {
-  plus: PointArithmeticFunc;
-  minus: PointArithmeticFunc;
-  times: PointArithmeticFunc;
-  over: PointArithmeticFunc;
+  plus: ArithmeticFunc;
+  minus: ArithmeticFunc;
+  times: ArithmeticFunc;
+  over: ArithmeticFunc;
+  pow: ArithmeticFunc;
   x: NumberAccessor;
   y: NumberAccessor;
 }
 
 export interface ArrayAccessor extends BaseAccessor {
-  plus: ArrayArithmeticFunc;
-  minus: ArrayArithmeticFunc;
-  times: ArrayArithmeticFunc;
-  over: ArrayArithmeticFunc;
+  plus: ArithmeticFunc;
+  minus: ArithmeticFunc;
+  times: ArithmeticFunc;
+  over: ArithmeticFunc;
+  pow: ArithmeticFunc;
 }
 
 export type Accessor = NumberAccessor | PointAccessor | ArrayAccessor;

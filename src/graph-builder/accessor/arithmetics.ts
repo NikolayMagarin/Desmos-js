@@ -142,7 +142,7 @@ export function init(universal = function () {}) {
     const resultValue: AccessorValue = {
       parts: ['\\frac{'],
       variables: [],
-      lastOperator: ArithmeticOperator.PLUS,
+      lastOperator: ArithmeticOperator.OVER,
     };
 
     aValue.parts.forEach((part) => resultValue.parts.push(part));

@@ -1,3 +1,5 @@
-export type VariableDefiner = {
-  [key: string]: any;
-};
+export interface VariableDefiner {
+  [key: string]: Variable;
+}
+
+export interface Variable {}

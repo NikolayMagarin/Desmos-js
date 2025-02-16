@@ -1,6 +1,7 @@
 export type AccessorType = 'number' | 'point';
 export const isAccessorSymbol = Symbol('isAccessor');
 export const valueSymbol = Symbol('value');
+export const lastOperatorSymbol = Symbol('lastOperator');
 
 export function isAccessor(obj: any): obj is Accessor {
   return (
@@ -11,6 +12,15 @@ export function isAccessor(obj: any): obj is Accessor {
 export interface AccessorValue {
   parts: (number | string)[];
   variables: string[];
+  lastOperator?: ArithmeticOperator;
+}
+
+export enum ArithmeticOperator {
+  PLUS,
+  MINUS,
+  TIMES,
+  OVER,
+  POW,
 }
 
 export interface BaseAccessor {
@@ -20,8 +30,8 @@ export interface BaseAccessor {
 
 export type PrimitiveNumber = number;
 export type PrimitivePoint = {
-  x: NumberAccessor | PrimitiveNumber;
-  y: NumberAccessor | PrimitiveNumber;
+  x: NumberAccessor | ArrayAccessor | PrimitiveNumber | PrimitiveArray;
+  y: NumberAccessor | ArrayAccessor | PrimitiveNumber | PrimitiveArray;
 };
 export type PrimitiveArray = Array<Accessor | PrimitiveNumber | PrimitivePoint>;
 export type PrimitiveValue = PrimitiveNumber | PrimitivePoint | PrimitiveArray;
@@ -42,8 +52,8 @@ export interface PointAccessor extends BaseAccessor {
   times: ArithmeticFunc;
   over: ArithmeticFunc;
   pow: ArithmeticFunc;
-  x: NumberAccessor;
-  y: NumberAccessor;
+  x: NumberAccessor | ArrayAccessor;
+  y: NumberAccessor | ArrayAccessor;
 }
 
 export interface ArrayAccessor extends BaseAccessor {
@@ -54,7 +64,7 @@ export interface ArrayAccessor extends BaseAccessor {
   pow: ArithmeticFunc;
 }
 
-export type Accessor = NumberAccessor | PointAccessor | ArrayAccessor;
+export type Accessor = NumberAccessor & PointAccessor & ArrayAccessor;
 
 export type AccessorCollector = {
   [k: string]: Accessor;

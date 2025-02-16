@@ -70,10 +70,10 @@ export function convertArray(value: PrimitiveArray): AccessorValue {
 export function convertPoint(value: PrimitivePoint) {
   const xVal = isAccessor(value.x)
     ? value.x[valueSymbol]
-    : primitiveToValue(value.x);
+    : primitiveToValue(value.x as PrimitiveValue);
   const yVal = isAccessor(value.y)
     ? value.y[valueSymbol]
-    : primitiveToValue(value.y);
+    : primitiveToValue(value.y as PrimitiveValue);
 
   return {
     parts: (['\\left('] as (string | number)[]).concat(

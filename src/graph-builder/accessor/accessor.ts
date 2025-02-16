@@ -41,7 +41,7 @@ export function parseValue(value: Accessor | PrimitiveValue): AccessorValue {
 }
 
 export function accessor(): AccessorCollector {
-  const accProxy = new Proxy(
+  return new Proxy(
     {},
     {
       get(target, property) {
@@ -53,6 +53,4 @@ export function accessor(): AccessorCollector {
       },
     }
   );
-
-  return accProxy;
 }

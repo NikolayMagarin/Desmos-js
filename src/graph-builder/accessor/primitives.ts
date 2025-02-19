@@ -29,7 +29,11 @@ export function primitiveToValue(primitive: PrimitiveValue): AccessorValue {
 export function isPrimitivePoint(
   primitive: PrimitiveValue
 ): primitive is PrimitivePoint {
-  return primitive.hasOwnProperty('x') && primitive.hasOwnProperty('y');
+  return (
+    typeof primitive === 'object' &&
+    primitive.hasOwnProperty('x') &&
+    primitive.hasOwnProperty('y')
+  );
 }
 
 // convert number to string avoiding using exponential notation

@@ -62,6 +62,7 @@ export interface ArrayAccessor extends BaseAccessor {
   times: ArithmeticFunc;
   over: ArithmeticFunc;
   pow: ArithmeticFunc;
+  length: NumberAccessor;
 }
 
 export type Accessor = NumberAccessor & PointAccessor & ArrayAccessor;

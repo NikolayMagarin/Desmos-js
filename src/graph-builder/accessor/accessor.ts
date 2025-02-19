@@ -9,6 +9,7 @@ import {
 } from './types';
 
 import { init as enableArithmetics } from './arithmetics';
+import { init as enableProperties } from './properties';
 import { primitiveToValue } from './primitives';
 
 export const universal = function () {};
@@ -19,6 +20,7 @@ universal.prototype[valueSymbol] = {
 };
 
 enableArithmetics(universal);
+enableProperties(universal);
 
 export function accessorWithValue(value: AccessorValue): Accessor {
   return Object.create(universal.prototype, {

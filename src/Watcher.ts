@@ -1,6 +1,6 @@
 import { ChildProcess, exec } from 'child_process';
 import fs, { existsSync } from 'fs';
-import { stdout } from 'process';
+import { stderr, stdout } from 'process';
 
 export class Watcher {
   private entryPoint: string;
@@ -46,6 +46,7 @@ export class Watcher {
     if (fs.existsSync(this.entryPoint)) {
       if (this.subprocess) {
         this.subprocess.stdout?.unpipe(stdout);
+        this.subprocess.stderr?.unpipe(stderr);
         this.subprocess.kill('SIGINT');
         this.subprocess = null;
       } else {
@@ -64,7 +65,7 @@ export class Watcher {
             );
             callback();
           } else if (error.signal !== 'SIGINT') {
-            console.error(error);
+            // console.error(error);
           }
 
           this.subprocess = null;
@@ -72,6 +73,7 @@ export class Watcher {
       );
 
       this.subprocess.stdout?.pipe(stdout);
+      this.subprocess.stderr?.pipe(stderr);
     } else {
       console.error(new Error(`Cannot find entry point: "${this.entryPoint}"`));
     }

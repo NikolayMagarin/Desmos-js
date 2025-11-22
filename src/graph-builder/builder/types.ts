@@ -1,3 +1,17 @@
+import { type primimtiveToAccessor, type accessor } from '../accessor/accessor';
+import { FunctionCollector } from '../accessor/build-in-functions';
+import { AdditionalParams } from '../accessor/types';
+import { type definer } from '../definer/definer';
+import { Utils } from '../utils';
+
+export interface GraphBuilder {
+  definer: ReturnType<typeof definer>;
+  accessor: ReturnType<typeof accessor>;
+  converter: typeof primimtiveToAccessor;
+  functions: FunctionCollector;
+  utils: Utils;
+}
+
 export interface Scope {
   parentScope: Scope | null;
   variableId: Map<string, number>; // Порядковый номер переменной во всем приложении по ее имени в данном скоупе
@@ -8,9 +22,15 @@ export interface ParsedExpression {
   name: string | null; // Оригинальное имя переменной или null, если в выражении не объявляется переменная а просто выполняется выражение
   parts: (number | string)[]; // Части выражения которые нужно склеить, string - уже в latex форме, number - порядковый номер переменной, использованной в этом выражении
   variables: string[]; // Имя использованной в выражении переменной по ее порядковому номеру в выражении
-  params?: Record<string, any>; // Всякие дополнительные параметры выражений, типа натсройки слайдера и т.д.
+  params: ExpressionParams & AdditionalParams & ParseExpressionParams;
 }
 
+// Всякие дополнительные параметры выражений, типа натсройки слайдера и т.д.
+export interface ExpressionParams {}
+
+export interface ParseExpressionParams {
+  localScope?: Scope;
+}
 /** 
 export interface Folder {
   id: string;

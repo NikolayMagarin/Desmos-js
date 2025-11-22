@@ -9,7 +9,7 @@ import {
 import { accessorWithValue } from './accessor';
 import { primitiveToValue } from './primitives';
 
-const operatorPriority: Record<ArithmeticOperator, number> = {
+export const operatorPriority: Record<ArithmeticOperator, number> = {
   [ArithmeticOperator.PLUS]: 0,
   [ArithmeticOperator.MINUS]: 0,
   [ArithmeticOperator.TIMES]: 1,
@@ -110,7 +110,10 @@ export function init(universal = function () {}) {
     aValue.parts.forEach((part) => resultValue.parts.push(part));
     if (needBracketsForA) resultValue.parts.push('\\right)');
 
-    // Возможно для умножения вообще необязательно '\\cdot ' и можно вообще ничего не вставлять
+    // TODO
+    // Есть ситуации когда cdot можно не ставить
+    // Например, если первый множитель - это примитив числа
+    //           если второй множитель - это не примитив массива (не уверен что это достаточное условие)
     resultValue.parts.push('\\cdot ');
 
     if (needBracketsForB) resultValue.parts.push('\\left(');
@@ -164,6 +167,13 @@ export function init(universal = function () {}) {
     return accessorWithValue(resultValue);
   };
 
+  /*
+    TODO
+    BUG: Если применить pow после f.sum() и тп, то возведение в степень произойдет до оператора sum,
+    то есть применится к выражению под суммой, хотя мы ожидаем, что применится ко всей сумме сразу.
+    Наверное придется операторам sum, int, prod, deriv, ln, log, logn тоже давать приоритет
+    Или как временное решение можно все операторы заключать в скобки и все аргументы операторов тоже заключать в скобки
+  */
   universal.prototype.pow = function (
     value: Accessor | PrimitiveValue
   ): Accessor {

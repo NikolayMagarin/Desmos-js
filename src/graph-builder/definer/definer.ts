@@ -1,10 +1,9 @@
 import { PrimitiveValue, Accessor } from '../accessor/types';
+import { onVariableDefine } from './onDefine';
 import { VariableDefiner } from './types';
 
-export function definer(
-  onDefine: (name: string, val: Accessor | PrimitiveValue) => void
-) {
-  return defaultDefiner(onDefine);
+export function definer() {
+  return defaultDefiner(onVariableDefine);
 }
 
 export function defaultDefiner(

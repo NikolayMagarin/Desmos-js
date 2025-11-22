@@ -10,6 +10,7 @@ import {
 
 import { init as enableArithmetics } from './arithmetics';
 import { init as enableProperties } from './properties';
+import { init as enableMethods } from './methods';
 import { primitiveToValue } from './primitives';
 
 export const universal = function () {};
@@ -21,17 +22,45 @@ universal.prototype[valueSymbol] = {
 
 enableArithmetics(universal);
 enableProperties(universal);
+enableMethods(universal);
+
+export function optimizeValueParts(parts: (number | string)[]) {
+  const optimized: (number | string)[] = [];
+  let lastSequence = '';
+
+  parts.forEach((part) => {
+    if (typeof parts === 'number') {
+      optimized.push(lastSequence, part);
+      lastSequence = '';
+    } else {
+      lastSequence += part;
+    }
+  });
+
+  if (lastSequence.length) {
+    optimized.push(lastSequence);
+  }
+
+  return optimized;
+}
 
 export function accessorWithValue(value: AccessorValue): Accessor {
   return Object.create(universal.prototype, {
     [valueSymbol]: {
-      value: value,
+      value: {
+        ...value,
+        // parts: optimizeValueParts(value.parts), // уменьшает количество элементов в parts если возможно
+      },
     },
   });
 }
 
-export function primimtiveToAccessor(primimtive: PrimitiveValue): Accessor {
-  return accessorWithValue(primitiveToValue(primimtive));
+export function primimtiveToAccessor(
+  primimtive: PrimitiveValue | Accessor
+): Accessor {
+  return isAccessor(primimtive)
+    ? primimtive
+    : accessorWithValue(primitiveToValue(primimtive));
 }
 
 export function parseValue(value: Accessor | PrimitiveValue): AccessorValue {
@@ -47,6 +76,10 @@ export function accessor(): AccessorCollector {
     {},
     {
       get(target, property) {
+        // TODO: optimize
+        // Каждый новый объект, который здесь создается отличается от других только значением value.variables
+        // Возможно есть смысл кэшировать эти объекты, чтобы на часто используемые переменные не создавать объекты много раз
+        // UPD: Вернувшись в проект через несколько месяцев, я уже не помню, почему решил что Object.create медленный
         return Object.create(universal.prototype, {
           [valueSymbol]: {
             value: { parts: [0], variables: [property] },

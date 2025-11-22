@@ -1,3 +1,3 @@
-import { graphBuilder } from './graph-builder/graphBuilder';
+import { graphBuilder } from './graph-builder/builder';
 
 export { graphBuilder };

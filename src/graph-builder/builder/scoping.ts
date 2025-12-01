@@ -38,7 +38,7 @@ export function withScope(expressions: () => void) {
 export function getVariableIdRecursively(
   scope: Scope,
   varName: string
-): number | undefined {
+): number {
   let curScope = scope;
   let result = curScope.variableId.get(varName);
 

@@ -55,7 +55,7 @@ export function accessorWithValue(value: AccessorValue): Accessor {
   });
 }
 
-export function primimtiveToAccessor(
+export function primitiveToAccessor(
   primimtive: PrimitiveValue | Accessor
 ): Accessor {
   return isAccessor(primimtive)

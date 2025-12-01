@@ -4,8 +4,9 @@ import { CompileError } from '../erorrs';
 import { parser } from './parser';
 import { getVariableIdRecursively } from './scoping';
 
-// TODO: Сделать функцией от имени переменной, ее id, additionParams и может от чего-то еще
-const variableShortName = 'i';
+export function getShortVarName(variableId: number) {
+  return `i_{${variableId}}`;
+}
 
 export function compile(): State {
   const expressionList: Expression[] = [];
@@ -18,33 +19,30 @@ export function compile(): State {
     let scope = expression.scope;
     let latexName = '';
     if (expression.name) {
-      latexName = `${variableShortName}_{${getVariableIdRecursively(
-        expression.scope,
-        expression.name
-      )}}`;
+      latexName = getShortVarName(
+        getVariableIdRecursively(expression.scope, expression.name)
+      );
 
       const params = expression.params;
       if (params.functionArgumentNames?.length && params.localScope) {
         // Если мы находимся внутри функции, то текущим скоупом становится локальный скоуп функции
         scope = params.localScope;
         latexName += `\\left(${params.functionArgumentNames
-          .map(
-            (v) =>
-              `${variableShortName}_{${getVariableIdRecursively(scope, v)}}`
-          )
+          .map((v) => getShortVarName(getVariableIdRecursively(scope, v)))
           .join(',')}\\right)`;
       }
 
       latexName += '=';
     }
 
-    const latexValue = expression.parts
+    let latexValue;
+
+    latexValue = expression.parts
       .map((part) => {
         if (typeof part == 'number') {
-          return `${variableShortName}_{${getVariableIdRecursively(
-            scope,
-            expression.variables[part]
-          )}}`;
+          return getShortVarName(
+            getVariableIdRecursively(scope, expression.variables[part])
+          );
         } else {
           return part;
         }

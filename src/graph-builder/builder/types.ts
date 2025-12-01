@@ -1,5 +1,6 @@
-import { type primimtiveToAccessor, type accessor } from '../accessor/accessor';
+import { type primitiveToAccessor, type accessor } from '../accessor/accessor';
 import { FunctionCollector } from '../accessor/build-in-functions';
+import { Operators } from '../accessor/operators';
 import { AdditionalParams } from '../accessor/types';
 import { type definer } from '../definer/definer';
 import { Utils } from '../utils';
@@ -7,9 +8,10 @@ import { Utils } from '../utils';
 export interface GraphBuilder {
   definer: ReturnType<typeof definer>;
   accessor: ReturnType<typeof accessor>;
-  converter: typeof primimtiveToAccessor;
+  converter: typeof primitiveToAccessor;
   functions: FunctionCollector;
   utils: Utils;
+  operators: Operators;
 }
 
 export interface Scope {

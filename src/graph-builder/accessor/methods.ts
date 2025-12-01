@@ -72,7 +72,7 @@ export function init(universal = function () {}) {
       thisValue.parts[0] !== 0 ||
       thisValue.variables.length !== 1
     ) {
-      throw new ParseError('Only variables can be changed, not equations');
+      throw new ParseError('Only variables can be changed, not expressions');
     }
 
     const newValue = isAccessor(newVal)

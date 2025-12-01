@@ -1,18 +1,20 @@
 import path from 'path';
 import fs from 'fs';
-import { accessor, primimtiveToAccessor } from '../accessor/accessor';
+import { accessor, primitiveToAccessor } from '../accessor/accessor';
 import { functions } from '../accessor/build-in-functions';
 import { definer } from '../definer/definer';
 import { utils } from '../utils';
 import { GraphBuilder } from './types';
 import { compile } from './compile';
+import { operators } from '../accessor/operators';
 
 export const graphBuilder: GraphBuilder = {
   definer: definer(),
   accessor: accessor(),
-  converter: primimtiveToAccessor,
+  converter: primitiveToAccessor,
   functions: functions,
   utils: utils,
+  operators: operators,
 };
 
 process.on('beforeExit', (code) => {

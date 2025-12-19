@@ -1,4 +1,5 @@
 import { accessorWithValue, parseValue } from './accessor';
+import { operators } from './operators';
 import { Accessor, PrimitiveValue, valueSymbol } from './types';
 
 export function init(universal = function () {}) {
@@ -121,5 +122,16 @@ export function init(universal = function () {}) {
     val.variables.forEach((variable) => variables.push(variable));
 
     return accessorWithValue({ parts, variables });
+  };
+
+  universal.prototype.and = function (condition: Accessor) {
+    return operators.if(this as Accessor, operators.if(condition, 1)).eq(1);
+  };
+
+  universal.prototype.or = function (condition: Accessor) {
+    return operators
+      .if(this as Accessor, 1)
+      .elif(condition, 1)
+      .eq(1);
   };
 }

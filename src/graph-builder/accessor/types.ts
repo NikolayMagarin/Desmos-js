@@ -69,7 +69,7 @@ type ArraySortFunc = (
 type ArrayUniqueFunc = () => ArrayAccessor;
 type ArrayShuffleFunc = () => ArrayAccessor;
 
-type ComparisonFunc = (value: Accessor) => Accessor;
+type ComparisonFunc = (value: Accessor | PrimitiveValue) => Accessor;
 
 interface AccessorWithArithmetics {
   plus: ArithmeticFunc;

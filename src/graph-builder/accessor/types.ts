@@ -14,6 +14,7 @@ export interface AccessorValue {
   variables: string[];
   lastOperator?: ArithmeticOperator;
   additionalParams?: AdditionalParams;
+  ifStatement?: boolean;
 }
 
 export enum ArithmeticOperator {
@@ -68,32 +69,46 @@ type ArraySortFunc = (
 type ArrayUniqueFunc = () => ArrayAccessor;
 type ArrayShuffleFunc = () => ArrayAccessor;
 
-export interface NumberAccessor extends BaseAccessor {
+type ComparisonFunc = (value: Accessor) => Accessor;
+
+interface AccessorWithArithmetics {
   plus: ArithmeticFunc;
   minus: ArithmeticFunc;
   times: ArithmeticFunc;
   over: ArithmeticFunc;
   pow: ArithmeticFunc;
+}
+
+interface AccessorWithComparisons {
+  eq: ComparisonFunc;
+  ne: ComparisonFunc;
+  lt: ComparisonFunc;
+  gt: ComparisonFunc;
+  le: ComparisonFunc;
+  ge: ComparisonFunc;
+  and: (condition: Accessor) => Accessor;
+  or: (condition: Accessor) => Accessor;
+  elif: (condition: Accessor, value?: Accessor | PrimitiveValue) => Accessor;
+  else: (value: Accessor | PrimitiveValue) => Accessor;
+}
+
+export interface NumberAccessor
+  extends BaseAccessor,
+    AccessorWithArithmetics,
+    AccessorWithComparisons {
   to: UpdateFunc;
 }
 
-export interface PointAccessor extends BaseAccessor {
-  plus: ArithmeticFunc;
-  minus: ArithmeticFunc;
-  times: ArithmeticFunc;
-  over: ArithmeticFunc;
-  pow: ArithmeticFunc;
+export interface PointAccessor extends BaseAccessor, AccessorWithArithmetics {
   x: NumberAccessor | ArrayAccessor;
   y: NumberAccessor | ArrayAccessor;
   to: UpdateFunc;
 }
 
-export interface ArrayAccessor extends BaseAccessor {
-  plus: ArithmeticFunc;
-  minus: ArithmeticFunc;
-  times: ArithmeticFunc;
-  over: ArithmeticFunc;
-  pow: ArithmeticFunc;
+export interface ArrayAccessor
+  extends BaseAccessor,
+    AccessorWithArithmetics,
+    AccessorWithComparisons {
   length: NumberAccessor;
   to: UpdateFunc;
   get: ArrayGetValueFunc;
@@ -120,8 +135,3 @@ export type Accessor = NumberAccessor &
 export type AccessorCollector = {
   [k: string]: Accessor;
 };
-
-// TODO
-// Добавить типы: Polygon, Color, Distribution ...
-// Также добавить условия а значит методы для isEqual isGreater и тд, которые будут возвращать новый тип Condition,
-// который можно закидывать в условие типа: Record<ConditionAccessor | 'default', Accessor>

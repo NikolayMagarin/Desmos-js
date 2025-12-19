@@ -11,6 +11,7 @@ import {
 import { init as enableArithmetics } from './arithmetics';
 import { init as enableProperties } from './properties';
 import { init as enableMethods } from './methods';
+import { init as enableComparisons } from './comparisons';
 import { primitiveToValue } from './primitives';
 
 export const universal = function () {};
@@ -23,6 +24,7 @@ universal.prototype[valueSymbol] = {
 enableArithmetics(universal);
 enableProperties(universal);
 enableMethods(universal);
+enableComparisons(universal);
 
 export function optimizeValueParts(parts: (number | string)[]) {
   const optimized: (number | string)[] = [];

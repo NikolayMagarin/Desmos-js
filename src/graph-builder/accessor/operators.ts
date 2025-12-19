@@ -2,7 +2,7 @@ import { getShortVarName } from '../builder/compile';
 import { parser } from '../builder/parser';
 import { getVariableIdRecursively, registerVariable } from '../builder/scoping';
 import { ParseError } from '../erorrs';
-import { accessorWithValue } from './accessor';
+import { accessorWithValue, parseValue } from './accessor';
 import { primitiveToValue } from './primitives';
 import {
   Accessor,
@@ -16,7 +16,8 @@ import {
 
 export interface Operators {
   for: ForOperator;
-  if: any;
+  if: IfOperator;
+  not: NotOperator;
 }
 
 type ForOperator = (iterVariable: Accessor) => {
@@ -128,4 +129,38 @@ operators.for = (iterVar) => {
   }
 
   return forFunc(iterVar);
+};
+
+type IfOperator = (
+  condition: Accessor,
+  value?: Accessor | PrimitiveValue
+) => Accessor;
+
+operators.if = (condition: Accessor, value?: Accessor | PrimitiveValue) => {
+  const parts: (string | number)[] = ['\\left\\{'];
+  const variables: string[] = [];
+
+  const condVal = condition[valueSymbol];
+
+  condVal.parts.forEach((part) => parts.push(part));
+  condVal.variables.forEach((variable) => variables.push(variable));
+
+  if (value) {
+    parts.push(':');
+    const val = parseValue(value);
+    val.parts.forEach((part) =>
+      parts.push(
+        typeof part === 'number' ? part + condVal.variables.length : part
+      )
+    );
+    val.variables.forEach((variable) => variables.push(variable));
+  }
+
+  parts.push('\\right\\}');
+
+  return accessorWithValue({ parts, variables, ifStatement: true });
+};
+
+type NotOperator = (condition: Accessor) => {
+  //
 };

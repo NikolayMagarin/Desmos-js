@@ -1,13 +1,5 @@
-// Помимо арифметических операций нужно добавить еще некотрые методы
-// Например, для массивов:
-// join()
-// get() - адрессация массива
-// random(10) - выбрать 10 случайных из массива (с повторениями)
-
-// и еще наверное какие-то, можно и свои придумать
-
 import { ParseError } from '../erorrs';
-import { accessorWithValue } from './accessor';
+import { accessorWithValue, parseValue } from './accessor';
 import { operatorPriority } from './arithmetics';
 import { primitiveToValue } from './primitives';
 import {
@@ -178,6 +170,7 @@ export function init(universal = function () {}) {
 
     return accessorWithValue({ parts, variables });
   };
+
   universal.prototype.random = function (
     size?: NumberAccessor | PrimitiveNumber
   ) {
@@ -296,5 +289,108 @@ export function init(universal = function () {}) {
     value.variables.forEach((variable) => resultValue.variables.push(variable));
 
     return accessorWithValue(resultValue);
+  };
+
+  universal.prototype.elif = function (
+    condition: Accessor,
+    value?: Accessor | PrimitiveValue
+  ) {
+    const thisVal = (this as Accessor)[valueSymbol];
+    const condVal = condition[valueSymbol];
+
+    if (!thisVal.ifStatement) {
+      throw new ParseError(
+        'Elif statement must be used after the If statement'
+      );
+    }
+
+    const parts = [...thisVal.parts];
+    const variables = [...thisVal.variables];
+
+    if (
+      typeof parts[parts.length - 1] === 'string' &&
+      (parts[parts.length - 1] as string).endsWith('\\right\\}')
+    ) {
+      if (parts[parts.length - 1] === '\\right\\}') {
+        parts.pop();
+      } else {
+        parts[parts.length - 1] = (parts[parts.length - 1] as string).slice(
+          0,
+          -'\\right\\}'.length
+        );
+      }
+    } else {
+      throw new ParseError(
+        'Elif statement must be used after the If statement'
+      );
+    }
+
+    parts.push(',');
+
+    condVal.parts.forEach((part) =>
+      parts.push(
+        typeof part === 'number' ? part + thisVal.variables.length : part
+      )
+    );
+    condVal.variables.forEach((variable) => variables.push(variable));
+
+    if (value) {
+      const val = parseValue(value);
+
+      parts.push(':');
+
+      val.parts.forEach((part) =>
+        parts.push(typeof part === 'number' ? part + variables.length : part)
+      );
+      val.variables.forEach((variable) => variables.push(variable));
+    }
+
+    parts.push('\\right\\}');
+
+    return accessorWithValue({ parts, variables, ifStatement: true });
+  };
+
+  universal.prototype.else = function (value: Accessor | PrimitiveValue) {
+    const thisVal = (this as Accessor)[valueSymbol];
+
+    if (!thisVal.ifStatement) {
+      throw new ParseError(
+        'Elif statement must be used after the If statement'
+      );
+    }
+
+    const parts = [...thisVal.parts];
+    const variables = [...thisVal.variables];
+
+    if (
+      typeof parts[parts.length - 1] === 'string' &&
+      (parts[parts.length - 1] as string).endsWith('\\right\\}')
+    ) {
+      if (parts[parts.length - 1] === '\\right\\}') {
+        parts.pop();
+      } else {
+        parts[parts.length - 1] = (parts[parts.length - 1] as string).slice(
+          0,
+          -'\\right\\}'.length
+        );
+      }
+    } else {
+      throw new ParseError(
+        'Elif statement must be used after the If statement'
+      );
+    }
+
+    parts.push(',');
+
+    const val = parseValue(value);
+
+    val.parts.forEach((part) =>
+      parts.push(typeof part === 'number' ? part + variables.length : part)
+    );
+    val.variables.forEach((variable) => variables.push(variable));
+
+    parts.push('\\right\\}');
+
+    return accessorWithValue({ parts, variables });
   };
 }

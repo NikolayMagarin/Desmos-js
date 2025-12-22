@@ -161,6 +161,13 @@ operators.if = (condition: Accessor, value?: Accessor | PrimitiveValue) => {
   return accessorWithValue({ parts, variables, ifStatement: true });
 };
 
-type NotOperator = (condition: Accessor) => {
-  //
+type NotOperator = (condition: Accessor) => Accessor;
+
+operators.not = (condition: Accessor) => {
+  const val = parseValue(condition);
+
+  return accessorWithValue({
+    parts: ['\\left\\{', ...val.parts, ':0,1\\right\\}=1'],
+    variables: [...val.variables],
+  });
 };

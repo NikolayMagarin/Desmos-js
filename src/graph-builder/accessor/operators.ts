@@ -21,18 +21,13 @@ export interface Operators {
 }
 
 type ForOperator = (iterVariable: Accessor) => {
-  in:
-    | ((iterValue: Accessor | PrimitiveArray) => {
-        for: ForOperator;
-        compute: (value: Accessor | PrimitiveValue) => ArrayAccessor;
-      })
-    | ((
-        iterStart: Accessor | PrimitiveValue,
-        iterEnd: Accessor | PrimitiveValue
-      ) => {
-        for: ForOperator;
-        compute: (value: Accessor | PrimitiveValue) => ArrayAccessor;
-      });
+  in: (
+    iterStart: Accessor | PrimitiveValue,
+    iterEnd?: Accessor | PrimitiveValue
+  ) => {
+    for: ForOperator;
+    compute: (value: Accessor | PrimitiveValue) => ArrayAccessor;
+  };
 };
 
 export const operators = {} as Operators;

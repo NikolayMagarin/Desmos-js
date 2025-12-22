@@ -226,10 +226,3 @@ function calcResultValue(argsValues: AccessorValue[]): AccessorValue {
     variables,
   };
 }
-
-// + 'for' с возможностью указания i for i = [1,2,3,4...] и i for 0 < i < 1
-// + какой-то удобный способ указания цветов отличный от функций rgb и hsv (хотя они тоже будут)
-
-// Нужно добавить типы: Function, Polygon, Action (в том числе Action с параметрами), Color, Distribution ...
-// Также добавить условия а значит методы для isEqual isGreater и тд, которые будут возвращать новый тип Condition,
-// который можно закидывать в условие типа: Record<ConditionAccessor | 'default', Accessor>

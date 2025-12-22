@@ -1,5 +1,6 @@
 import { type primitiveToAccessor, type accessor } from '../accessor/accessor';
 import { FunctionCollector } from '../accessor/build-in-functions';
+import { Constants } from '../accessor/constants';
 import { Operators } from '../accessor/operators';
 import { AdditionalParams } from '../accessor/types';
 import { type definer } from '../definer/definer';
@@ -12,6 +13,7 @@ export interface GraphBuilder {
   functions: FunctionCollector;
   utils: Utils;
   operators: Operators;
+  constants: Constants;
 }
 
 export interface Scope {

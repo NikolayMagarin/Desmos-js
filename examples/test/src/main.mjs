@@ -7,4 +7,5 @@ const {
   functions: f,
   operators: o,
   utils: u,
+  constants: c,
 } = gb;

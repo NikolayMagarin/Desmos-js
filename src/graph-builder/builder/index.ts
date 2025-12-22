@@ -7,6 +7,7 @@ import { utils } from '../utils';
 import { GraphBuilder } from './types';
 import { compile } from './compile';
 import { operators } from '../accessor/operators';
+import { constants } from '../accessor/constants';
 
 export const graphBuilder: GraphBuilder = {
   definer: definer(),
@@ -15,6 +16,7 @@ export const graphBuilder: GraphBuilder = {
   functions: functions,
   utils: utils,
   operators: operators,
+  constants: constants,
 };
 
 process.on('beforeExit', (code) => {

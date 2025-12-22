@@ -21,23 +21,39 @@ export interface Operators {
 }
 
 type ForOperator = (iterVariable: Accessor) => {
-  in: (iterValue: Accessor | PrimitiveArray) => {
-    for: ForOperator;
-    compute: (value: Accessor | PrimitiveValue) => ArrayAccessor;
-  };
+  in:
+    | ((iterValue: Accessor | PrimitiveArray) => {
+        for: ForOperator;
+        compute: (value: Accessor | PrimitiveValue) => ArrayAccessor;
+      })
+    | ((
+        iterStart: Accessor | PrimitiveValue,
+        iterEnd: Accessor | PrimitiveValue
+      ) => {
+        for: ForOperator;
+        compute: (value: Accessor | PrimitiveValue) => ArrayAccessor;
+      });
 };
 
 export const operators = {} as Operators;
 
 operators.for = (iterVar) => {
   const iteratorNames: string[] = [];
-  const iteratorValues: AccessorValue[] = [];
+  const iteratorValues: (AccessorValue | [Accessor, Accessor])[] = [];
 
   const builder: ReturnType<ForOperator> = {
-    in: (iterVal: Accessor | PrimitiveArray) => {
-      iteratorValues.push(
-        isAccessor(iterVal) ? iterVal[valueSymbol] : primitiveToValue(iterVal)
-      );
+    in: (iterStart, iterEnd) => {
+      if (!iterEnd) {
+        iteratorValues.push(
+          isAccessor(iterStart)
+            ? iterStart[valueSymbol]
+            : primitiveToValue(iterStart)
+        );
+      } else {
+        const start = accessorWithValue(parseValue(iterStart));
+        const end = accessorWithValue(parseValue(iterEnd));
+        iteratorValues.push([start, end]);
+      }
 
       return {
         for: forFunc,
@@ -99,18 +115,37 @@ operators.for = (iterVar) => {
     parts.push('\\operatorname{for}');
 
     iteratorNames.forEach((iterName, i) => {
-      parts.push(
-        getShortVarName(getVariableIdRecursively(forScope, iterName)),
-        '='
+      const iteratorValue = iteratorValues[i];
+      const iterLatexName = getShortVarName(
+        getVariableIdRecursively(forScope, iterName)
       );
-      iteratorValues[i].parts.forEach((part) => {
-        if (typeof part === 'number') {
-          parts.push(variables.length);
-          variables.push(iteratorValues[i].variables[part]);
-        } else {
-          parts.push(part);
-        }
-      });
+
+      if (Array.isArray(iteratorValue)) {
+        const parametrizedPointBoundsValue = iteratorValue[0]
+          .lt(accessorWithValue({ parts: [iterLatexName], variables: [] }))
+          .lt(iteratorValue[1])[valueSymbol];
+
+        parametrizedPointBoundsValue.parts.forEach((part) => {
+          if (typeof part === 'number') {
+            parts.push(variables.length);
+            variables.push(parametrizedPointBoundsValue.variables[part]);
+          } else {
+            parts.push(part);
+          }
+        });
+      } else {
+        parts.push(iterLatexName, '=');
+
+        iteratorValue.parts.forEach((part) => {
+          if (typeof part === 'number') {
+            parts.push(variables.length);
+            variables.push(iteratorValue.variables[part]);
+          } else {
+            parts.push(part);
+          }
+        });
+      }
+
       parts.push(',');
     });
 
